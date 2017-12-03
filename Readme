@@ -1,0 +1,26 @@
+Authors: David Rocker, Pranshu Sinha, Sameer Poudwal
+
+The code contained is the majority required to run and generate the results for our project. In order
+to run our code you must have Python 3.5 or 3.6 installed.  We recommend installing Anaconda (64-bit)
+as this will have the majority of the packages required to run our program.  Anaconda download can be
+found here:
+https://anaconda.org/
+
+The following additional packages are required to be installed and are not included as part of the
+Anaconda Python environment:
+* psycopg2
+* Keras
+* Tensorflow
+
+psycopg2 can be installed easily in the Anaconda environment by using the following command in an
+Anaconda terminal:
+conda install -c anaconda psycopg2
+
+Next, Keras must be installed with the Tensorflow backend.  Instructions for installing keras can be
+found here:
+https://keras.io/
+
+Instructions for Tensorflow can be found on that same documentation page with Keras as well.
+However, if additional help is required, you can go here:
+https://www.tensorflow.org/install/
+

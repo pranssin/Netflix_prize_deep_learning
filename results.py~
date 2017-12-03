@@ -1,0 +1,108 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Dec  2 09:13:27 2017
+
+@author: David
+"""
+from matplotlib import pyplot as plt
+import numpy as np
+
+adam_loss = [.9004, .8340, .8294, .8082, .7685, .7503, .7418, .7341, .7240, .7122, .7011, .6914, .6824, .6734, .6640, .6541, .6443, .6346, .6254, .6165, .6079, .5998, .5919, .5844, .5774, .5703, .5637, .5574, .5514, .5459]
+adam_val_loss =[.8381, .8424, .8341, .7965, .7708, .7682, .7638, .7591, .7590, .7487, .7458, .7448, .7426, .7402, .7740, .7394, .7375, .7391, .7455, .7397, .7448, .7524, .7494, .7510, .7545, .7628, .7609, .7679, .7701, .7827]
+
+adadelta_loss = [1.0500, .8628, .8432, .8377, .8350, .8332, .8321, .8311, .8305, .8298, 
+                 .8294, .8290, .8287, .8283, .8280, .8277, .8275, .8272, .8269, .8267, .8264, 
+                 .8262, .8259, .8255, .8252, .8247, .8242, .8234, .8222, .8207]
+adadelta_val_loss = [.9180, .8522, .8512, .8396, .8395, .8377, .8576, .8533, .8571, .8512, .8372, 
+                     .8369, .8388, .8367, .8470, .8384, .8357, .8457, .8417, .8375, .8362, .8357, 
+                     .8383, .8353, .8384, .8345, .8341, .8333, .8366, .8309]
+
+adamax_loss = [.8847, .8361, .8321, .8284, .8230, .8029, .7794, .7678, .7618, .7560, .7492, .7440, .7402, .7371, .7343, .7312, .7282, .7250, .7217, .7183, .7147, .7109, .7068, .7029, .6690, .6955, .6918, .6882, .6846, .6807]
+adamax_val_loss = [.8447, .8382, .8358, .8338, .8247, .8000, .7837, .7780, .7764, .7692, .7652, .7631, .7616, .7608, .7618, .7584, .7574, .7561, .7543, .7528, .7503, .7488, .7470, .7453, .7434, .7423, .7416, .7412, .7389, .7391]
+
+sgd_loss = [1.1819, 1.1764, 1.1751, 1.1711, 1.1449, .9960, .9483, .9455, .9432, .9410, .9389, .9370, .9352, .9333, .9313, .9291, .9264, .9231, .9191, .9145, .9098, .9056, .9021, .8993, .8969, .8947, .8928, .8909, .8891, .8873]
+sgd_val_loss = [1.1779, 1.1778, 1.1751, 1.1667, 1.0919, .9504, .9520, .9449, .9436, .9421, .9369, .9390, .9331, .9316, .9293, .9281, .9262, .9258, .9189, .9157, .9191, .9162, .9022, .9084, .9006, .8944, .8935, .8971, .8921, .8937]
+
+
+adam_loss = np.array(adam_loss)
+adadelta_loss = np.array(adadelta_loss)
+adamax_loss = np.array(adamax_loss)
+sgd_loss = np.array(sgd_loss)
+
+adam_val_loss = np.array(adam_val_loss)
+adadelta_val_loss = np.array(adadelta_val_loss)
+adamax_val_loss = np.array(adamax_val_loss)
+sgd_val_loss = np.array(sgd_val_loss)
+
+epochs = [i for i in range(1, 31)]
+
+
+plt.plot(epochs, adam_loss, label='ADAM')
+plt.plot(epochs, adadelta_loss, label='ADADELTA')
+plt.plot(epochs, adamax_loss, label='ADAMAX')
+plt.plot(epochs, sgd_loss, label='SGD')
+plt.legend()
+plt.title("Model Loss")
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.show()
+
+
+plt.plot(epochs, adam_val_loss, label='ADAM')
+plt.plot(epochs, adadelta_val_loss, label='ADADELTA')
+plt.plot(epochs, adamax_val_loss, label='ADAMAX')
+plt.plot(epochs, sgd_val_loss, label='SGD')
+plt.legend()
+plt.title("Validation Loss")
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.show()
+
+
+# Now do the same for the RMSE's
+adam_rmse = np.sqrt(adam_loss)
+adadelta_rmse = np.sqrt(adadelta_loss)
+adamax_rmse = np.sqrt(adamax_loss)
+sgd_rmse = np.sqrt(sgd_loss)
+
+adam_val_rmse = np.sqrt(adam_val_loss)
+adadelta_val_rmse = np.sqrt(adadelta_val_loss)
+adamax_val_rmse = np.sqrt(adamax_val_loss)
+sgd_val_rmse = np.sqrt(sgd_val_loss)
+
+
+plt.plot(epochs, adam_rmse, label='ADAM')
+plt.plot(epochs, adadelta_rmse, label='ADADELTA')
+plt.plot(epochs, adamax_rmse, label='ADAMAX')
+plt.plot(epochs, sgd_rmse, label='SGD')
+plt.legend()
+plt.title("Model RMSE")
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.show()
+
+
+plt.plot(epochs, adam_val_rmse, label='ADAM')
+plt.plot(epochs, adadelta_val_rmse, label='ADADELTA')
+plt.plot(epochs, adamax_val_rmse, label='ADAMAX')
+plt.plot(epochs, sgd_val_rmse, label='SGD')
+plt.legend()
+plt.title("Validation RMSE")
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.show()
+
+
+print("ADAM:\nModel Loss: {}\t Model RMSE: {}\nValidation Loss: {}\t Validation RMSE: {}\n".format(
+        adam_loss.min(), adam_rmse.min(), adam_val_loss.min(), adam_val_rmse.min()))
+
+print("ADADELTA:\nModel Loss: {}\t Model RMSE: {}\nValidation Loss: {}\t Validation RMSE: {}\n".format(
+        adadelta_loss.min(), adadelta_rmse.min(), adadelta_val_loss.min(), adadelta_val_rmse.min()))
+
+print("ADAMAX:\nModel Loss: {}\t Model RMSE: {}\nValidation Loss: {}\t Validation RMSE: {}\n".format(
+        adamax_loss.min(), adamax_rmse.min(), adamax_val_loss.min(), adamax_val_rmse.min()))
+
+print("SGD:\nModel Loss: {}\t Model RMSE: {}\nValidation Loss: {}\t Validation RMSE: {}\n".format(
+        sgd_loss.min(), sgd_rmse.min(), sgd_val_loss.min(), sgd_val_rmse.min()))
+
+

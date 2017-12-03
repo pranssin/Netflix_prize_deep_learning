@@ -1,0 +1,120 @@
+"""
+This file is responsible for getting the data used for training and testing our project from our
+database.
+
+
+@author: David Rocker
+@author: Pranshu Sinha
+@author: Sameer Poudwal
+"""
+
+from sklearn.model_selection import train_test_split
+import pickle as pkl
+import database
+import pandas as pd
+import datetime as dt
+
+# Get the list of user IDs
+with open('userid_list.pkl', 'rb') as f:
+    userid_list = pkl.load(f)
+    
+
+# Create database connection
+datab = database.Database()
+
+# Define the commands to get the data from the database
+train_test_set = pd.DataFrame(columns=['movie_id', 'user_id', 'rating', 'date'])
+command = "select * from netflix.data where user_id={};"
+cols = ['movie_id', 'user_id', 'rating', 'date_watched']
+
+# Normalize each date in the set
+date_norm_factor = dt.datetime.strptime('1999-11-11', "%Y-%m-%d")
+date_norm_factor = dt.datetime.toordinal(date_norm_factor)
+
+i = 1
+counter = 0
+# Loop through each user in our list and get that user's data
+for user in userid_list:
+    df = datab.get_data(command.format(user), cols)
+    
+    df['date_watched'] = pd.to_datetime(df['date_watched'])
+    df['date']= df['date_watched'].map(dt.datetime.toordinal)
+    df['date'] = df['date'] - date_norm_factor
+    
+    # Concat this user's data with all of our data so far
+    train_test_set = pd.concat([train_test_set, df[['movie_id', 'user_id', 'rating', 'date']]])
+    
+    # Save this dataset after every 5 iterations in case we lose power
+    counter = counter + 1
+    if counter == 5:
+        with open('train_test_set.pkl', 'wb') as f:
+            pkl.dump(train_test_set, f)
+        counter = 0
+        print("successful pickle at user id {}".format(user))
+    print("done with user {}, which is user id {}.".format(i, user))
+    i = i + 1
+
+# Save the datset one last time
+with open('train_test_set_NEW.pkl', 'wb') as f:
+    pkl.dump(train_test_set, f)
+
+
+
+new_movie_list = set(train_test_set['movie_id'].values)
+with open('movie_avg_list.pkl', 'rb') as f:
+    movie_avg_list = pkl.load(f)
+
+old_movie_list = []
+for movie in movie_avg_list:
+    old_movie_list.append(movie[0])
+
+old_movie_list = set(old_movie_list)
+new_movie_list = list(new_movie_list - old_movie_list)
+
+# Get the average movie rating for any movie we don't already have the average for
+command = "select avg(rating) from netflix.data where movie_id={};"
+for i in range(0, len(new_movie_list)):
+    df = datab.get_data(command.format(new_movie_list[i]), ['avg'])
+    
+    movie_avg_list.append([new_movie_list[i], df['avg'][0]])
+    
+    with open('movie_avg_list_NEW.pkl', 'wb') as f:
+        pkl.dump(movie_avg_list, f)
+        
+    print("Done with movie {}".format(i+1))
+    
+# Put the result into a hash table
+movie_avg_dict = {}
+for e in movie_avg_list:
+    movie_avg_dict[e[0]] = e[1]
+    
+with open('movie_avg_dictionary.pkl', 'wb') as f:
+    pkl.dump(movie_avg_dict, f)
+
+
+ratings = train_test_set['rating'].values
+data_set = train_test_set[['movie_id', 'user_id', 'date']]
+
+# Split our dataset into training and testing datasets
+x_train, x_test, y_train, y_test = train_test_split(data_set, ratings, test_size=0.20, random_state=42)
+
+with open('x_train_new.pkl', 'wb') as f:
+    pkl.dump(x_train, f)
+
+with open('x_test_new.pkl', 'wb') as f:
+    pkl.dump(x_test, f)
+
+with open('y_train_new.pkl', 'wb') as f:
+    pkl.dump(y_train, f)
+
+with open('y_test_new.pkl', 'wb') as f:
+    pkl.dump(y_test, f)
+
+
+
+
+
+
+
+#
+
